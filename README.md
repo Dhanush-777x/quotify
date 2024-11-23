@@ -4,6 +4,8 @@
 
 **Quotify** is a React-based web application designed to provide users with motivational and thought-provoking quotes. The platform integrates seamless user authentication and a dynamic quote recommendation system. It also includes robust admin functionalities for user and category management.
 
+[Live Demo](https://quotify-one.vercel.app/)
+
 ## Usage
 #### Clone the repository
 ```bash
