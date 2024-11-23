@@ -224,20 +224,24 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-64 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
-      <div className="flex justify-between">
-        <h2 className="text-4xl font-semibold mb-6">Dashboard</h2>
+    <div className="absolute text-white inset-0 -z-10 flex flex-col items-center justify-center h-max px-4 sm:px-10 lg:px-64 py-6 lg:py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
+      <div className="flex flex-col sm:flex-row sm:justify-between w-full mb-6">
+        <h2 className="text-2xl lg:text-4xl font-semibold mb-4 sm:mb-0">
+          Dashboard
+        </h2>
         <button
-          onClick={() => handleLogout()}
-          className="bg-gradient-to-r from-red-600 to-red-500 text-px-4 py-2 px-4 rounded-md mb-4 hover:scale-105"
+          onClick={handleLogout}
+          className="bg-gradient-to-r from-red-600 to-red-500 text-sm lg:text-base py-2 px-4 rounded-md hover:scale-105"
         >
           Logout
         </button>
       </div>
 
       {role === "categoryManager" && (
-        <div className="mb-6 p-4 bg-gray-700 rounded-lg shadow-md">
-          <h3 className="text-2xl font-medium mb-4">Change Quote Category</h3>
+        <div className="mb-6 p-4 bg-gray-700 rounded-lg shadow-md w-full sm:w-auto">
+          <h3 className="text-xl lg:text-2xl font-medium mb-4">
+            Change Quote Category
+          </h3>
           <input
             type="text"
             value={quoteCategory}
@@ -255,14 +259,16 @@ const Dashboard = () => {
       )}
 
       {role === "admin" && (
-        <div className="mb-6 bg-white/10 backdrop-blur-lg rounded-md p-10">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-semibold">Manage Users</h3>
-            <div className="flex space-x-4">
+        <div className="mb-6 bg-white/10 backdrop-blur-lg rounded-md p-6 lg:p-10 w-full">
+          <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4">
+            <h3 className="text-lg lg:text-2xl font-semibold mb-4 sm:mb-0">
+              Manage Users
+            </h3>
+            <div className="flex space-x-4 w-full sm:w-auto">
               <select
                 value={filterRole}
                 onChange={handleFilterRole}
-                className="bg-gray-800 text-white px-3 py-2 rounded-md"
+                className="bg-gray-800 text-white px-3 py-2 rounded-md w-full sm:w-auto"
               >
                 <option value="">Filter by Role</option>
                 <option value="user">User</option>
@@ -270,7 +276,7 @@ const Dashboard = () => {
               </select>
               <button
                 onClick={() => openModal()}
-                className="bg-transparent border border-green-600/50 text-green-600 text-px-4 py-2 px-4 rounded-md hover:scale-105"
+                className="bg-transparent border border-green-600/50 text-green-600 text-sm lg:text-base py-2 px-4 rounded-md hover:scale-105"
               >
                 Add User
               </button>
@@ -282,11 +288,11 @@ const Dashboard = () => {
             filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex items-center justify-between py-6 border-b border-white/20"
+                className="flex flex-col sm:flex-row sm:justify-between py-6 border-b border-white/20"
               >
                 <span>{user.username}</span>
-                <div className="px-2 items-center flex justify-center">
-                  <div className="flex justify-start w-64 text-md mr-6 bg-transparent text-white backdrop-blur-lg text-sm rounded-2xl p-3 border border-white/10 shadow-inner">
+                <div className="px-2 items-center flex flex-col sm:flex-row">
+                  <div className="flex justify-start w-full sm:w-64 text-md mr-6 bg-transparent text-white backdrop-blur-lg text-sm rounded-2xl p-3 border border-white/10 shadow-inner">
                     {user.role === "categoryManager" ? (
                       <UserRoundPen className="w-4 h-4 mr-2" />
                     ) : (
@@ -296,19 +302,20 @@ const Dashboard = () => {
                       {user.role === "categoryManager" ? "Manager" : "User"}
                     </span>
                   </div>
-
-                  <button
-                    onClick={() => openModal(user)}
-                    className="bg-transparent border border-yellow-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl mr-4"
-                  >
-                    <Pencil className="text-yellow-400" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteUser(user._id)}
-                    className="bg-transparent border border-red-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl mr-4"
-                  >
-                    <Trash2 className="text-red-500" />
-                  </button>
+                  <div className="flex mt-2 sm:mt-0 space-x-4">
+                    <button
+                      onClick={() => openModal(user)}
+                      className="bg-transparent border border-yellow-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl"
+                    >
+                      <Pencil className="text-yellow-400" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteUser(user._id)}
+                      className="bg-transparent border border-red-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl"
+                    >
+                      <Trash2 className="text-red-500" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -318,8 +325,8 @@ const Dashboard = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white/10 backdrop-blur-xl p-10 rounded-lg shadow-lg w-96">
-            <h3 className="text-2xl font-medium mb-4">
+          <div className="bg-white/10 backdrop-blur-xl p-6 lg:p-10 rounded-lg shadow-lg w-full sm:w-96">
+            <h3 className="text-xl lg:text-2xl font-medium mb-4">
               {isEditing ? "Edit User" : "Add User"}
             </h3>
             <input
