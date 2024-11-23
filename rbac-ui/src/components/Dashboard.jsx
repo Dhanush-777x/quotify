@@ -15,6 +15,20 @@ const Dashboard = () => {
   const [filterRole, setFilterRole] = useState(""); // State for role filtering
   const [isEditing, setIsEditing] = useState(false);
   const role = localStorage.getItem("role");
+  const categories = [
+    "art",
+    "communication",
+    "courage",
+    "education",
+    "family",
+    "happiness",
+    "health",
+    "knowledge",
+    "leadership",
+    "money",
+  ];
+
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -322,7 +336,6 @@ const Dashboard = () => {
           )}
         </div>
       )}
-
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white/10 backdrop-blur-xl p-6 lg:p-10 rounded-lg shadow-lg w-full sm:w-96">
@@ -360,14 +373,21 @@ const Dashboard = () => {
                 Category Manager
               </option>
             </select>
-            <input
-              type="text"
+            <select
               name="quoteCategory"
               value={formData.quoteCategory}
               onChange={handleFormChange}
-              placeholder="Quote Category"
               className="w-full bg-transparent p-3 mb-4 border border-white/20 rounded-md"
-            />
+            >
+              <option value="" disabled>
+                Select Category
+              </option>
+              {categories.map((category, index) => (
+                <option key={index} value={category} className="bg-black">
+                  {category}
+                </option>
+              ))}
+            </select>
             <div className="flex justify-between">
               <button
                 onClick={handleSaveUser}
