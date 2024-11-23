@@ -84,7 +84,7 @@ const CategoryManager = ({ currentUserId }) => {
 
   const openModal = (user) => {
     setSelectedUser(user);
-    setSelectedCategory(user.quoteCategory || ""); // Default to the user's current category
+    setSelectedCategory(user.category || ""); // Default to the user's current category
     setIsModalOpen(true);
   };
 
