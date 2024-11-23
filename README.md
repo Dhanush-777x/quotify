@@ -19,6 +19,17 @@ npm install
 npm start
 ```
 
+### Credentials
+- **Admin**
+ - username - admin
+ - password - admin
+- **Manager**
+ - username - manager
+ - password - manager
+- **User**
+ - username - user
+ - password - user
+
 ## Features
 
 ### User Authentication
