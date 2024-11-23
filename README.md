@@ -20,13 +20,13 @@ npm start
 ```
 
 ### Credentials
-- **Admin**
+#### **Admin**
  - username - admin
  - password - admin
-- **Manager**
+ #### **Manager**
  - username - manager
  - password - manager
-- **User**
+ #### **User**
  - username - user
  - password - user
 
