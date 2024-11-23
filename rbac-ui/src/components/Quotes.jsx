@@ -42,7 +42,7 @@ const Quotes = () => {
       axios({
         method: "GET",
         url: `https://api.api-ninjas.com/v1/quotes?category=${quoteCategory}`,
-        headers: { "X-Api-Key": "vYYy1tycD6Zfs/4QAcZ81w==WOSooei6SHyhvBFn1" },
+        headers: { "X-Api-Key": "vYYy1tycD6Zfs/4QAcZ81w==WOSooei6SHyhvBFn" },
       })
         .then((response) => {
           console.log("Quotes API Response:", response.data);
@@ -74,6 +74,7 @@ const Quotes = () => {
         <h3 className="text-3xl font-semibold mb-6 text-left">
           Hello {username}!
         </h3>
+
         <button
           onClick={handleLogout}
           className="bg-red-500 text-px-4 py-2 px-4 rounded-md mb-4"
@@ -81,7 +82,7 @@ const Quotes = () => {
           Logout
         </button>
       </div>
-
+    <h4 className="text-2xl mb-10">Here is a Quote for You!</h4>
       {/* Loading Spinner */}
       {loading ? (
         <div className="flex justify-center items-center">

@@ -224,7 +224,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="absolute text-white inset-0 -z-10 flex flex-col items-center justify-center h-max px-4 sm:px-10 lg:px-64 py-6 lg:py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
+    <div className="absolute text-white inset-0 -z-10 flex flex-col items-center justify-center h-max px-4 sm:px-10 lg:px-64 py-6 lg:py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)] min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between w-full mb-6">
         <h2 className="text-2xl lg:text-4xl font-semibold mb-4 sm:mb-0">
           Dashboard
