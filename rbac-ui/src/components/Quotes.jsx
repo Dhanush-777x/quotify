@@ -42,7 +42,7 @@ const Quotes = () => {
       axios({
         method: "GET",
         url: `https://api.api-ninjas.com/v1/quotes?category=${quoteCategory}`,
-        headers: { "X-Api-Key": "vYYy1tycD6Zfs/4QAcZ81w==WOSooei6SHyhvBFn" },
+        headers: { "X-Api-Key": process.env.API_KEY },
       })
         .then((response) => {
           console.log("Quotes API Response:", response.data);
