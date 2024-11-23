@@ -147,30 +147,32 @@ const CategoryManager = ({ currentUserId }) => {
   };
 
   return (
-    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-64 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Manager</h2>
+    <div className="absolute text-white inset-0 -z-10 flex flex-col items-center justify-center px-4 sm:px-10 lg:px-64 py-6 lg:py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
+      <div className="flex flex-col sm:flex-row sm:justify-between w-full mb-6">
+        <h2 className="text-xl lg:text-2xl font-semibold mb-4 sm:mb-0">
+          Manager
+        </h2>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded-md"
+          className="bg-red-500 text-sm lg:text-base text-white py-2 px-4 rounded-md hover:scale-105"
         >
           Logout
         </button>
       </div>
 
       {/* Search, Sort, and Filter Controls */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-4 space-y-4 sm:space-y-0">
         <input
           type="text"
           placeholder="Search by username"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-gray-800 text-white p-2 rounded-md w-1/3"
+          className="bg-gray-800 text-white p-2 rounded-md w-full sm:w-1/3"
         />
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="bg-gray-800 text-white p-2 rounded-md w-1/4"
+          className="bg-gray-800 text-white p-2 rounded-md w-full sm:w-1/4"
         >
           <option value="">Filter by Category</option>
           {categories.map((category, index) => (
@@ -183,28 +185,28 @@ const CategoryManager = ({ currentUserId }) => {
           onClick={() =>
             setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
           }
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          className="bg-blue-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
         >
           Sort: {sortOrder === "asc" ? "Ascending" : "Descending"}
         </button>
       </div>
 
       {/* User List */}
-      <div className="bg-white/10 rounded-lg backdrop-blur-lg p-10">
-        <h3 className="text-xl font-medium mb-4">Users</h3>
+      <div className="bg-white/10 rounded-lg backdrop-blur-lg p-6 lg:p-10 w-full">
+        <h3 className="text-lg lg:text-xl font-medium mb-4">Users</h3>
         <div>
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex items-center justify-between py-6 border-b border-gray-600"
+                className="flex flex-col sm:flex-row sm:justify-between py-4 border-b border-gray-600"
               >
-                <span>{user.username}</span>
+                <span className="text-sm lg:text-base">{user.username}</span>
                 <button
                   onClick={() => openModal(user)}
-                  className="bg-transparent border border-yellow-300/30 px-4 py-2 rounded-md"
+                  className="bg-transparent border border-yellow-300/30 px-4 py-2 rounded-md mt-2 sm:mt-0"
                 >
-                  <div className="flex mr-2 justify-center items-center text-yellow-300">
+                  <div className="flex justify-center items-center text-yellow-300">
                     <Edit className="text-yellow-300 mr-2" />
                     Edit
                   </div>
@@ -219,9 +221,11 @@ const CategoryManager = ({ currentUserId }) => {
 
       {/* Modal for Editing Category */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-2xl font-medium mb-4">Edit Category</h3>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4">
+          <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-lg w-full sm:w-96">
+            <h3 className="text-lg lg:text-2xl font-medium mb-4">
+              Edit Category
+            </h3>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -236,16 +240,16 @@ const CategoryManager = ({ currentUserId }) => {
                 </option>
               ))}
             </select>
-            <div className="flex justify-between">
+            <div className="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0">
               <button
                 onClick={handleSaveCategory}
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                className="bg-green-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
               >
                 Save
               </button>
               <button
                 onClick={closeModal}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                className="bg-gray-500 text-white px-4 py-2 rounded-md w-full sm:w-auto"
               >
                 Cancel
               </button>
