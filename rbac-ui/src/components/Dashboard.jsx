@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-
-import { Pencil, Trash2 } from 'lucide-react';
+import { User, UserRoundPen, Pencil, Trash2, Save, X } from "lucide-react";
 
 const Dashboard = () => {
   const [quoteCategory, setQuoteCategory] = useState("");
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // State for filtered users
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -12,6 +12,7 @@ const Dashboard = () => {
     role: "user",
     quoteCategory: "",
   });
+  const [filterRole, setFilterRole] = useState(""); // State for role filtering
   const [isEditing, setIsEditing] = useState(false);
   const role = localStorage.getItem("role");
 
@@ -26,6 +27,7 @@ const Dashboard = () => {
         }
         const data = await response.json();
         setUsers(data);
+        setFilteredUsers(data); // Initialize filteredUsers with all users
       } catch (error) {
         console.error("Error fetching users:", error);
         alert("Failed to fetch users.");
@@ -139,6 +141,11 @@ const Dashboard = () => {
             user._id === updatedUser._id ? updatedUser : user
           )
         );
+        setFilteredUsers((prev) =>
+          prev.map((user) =>
+            user._id === updatedUser._id ? updatedUser : user
+          )
+        );
         alert("User updated successfully.");
       } else {
         // Add a new user
@@ -164,6 +171,7 @@ const Dashboard = () => {
 
         const newUser = await response.json();
         setUsers((prev) => [...prev, newUser]);
+        setFilteredUsers((prev) => [...prev, newUser]);
         alert("User added successfully.");
       }
     } catch (error) {
@@ -188,21 +196,13 @@ const Dashboard = () => {
       }
 
       setUsers((prev) => prev.filter((user) => user._id !== userId));
+      setFilteredUsers((prev) => prev.filter((user) => user._id !== userId));
       alert("User deleted successfully.");
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("Failed to delete user.");
     }
   };
-
-  if (role === "user") {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center h-screen bg-gray-800 text-white">
-        <h2 className="text-3xl font-semibold">Access Denied</h2>
-        <p>You do not have permission to access this page.</p>
-      </div>
-    );
-  }
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -213,10 +213,20 @@ const Dashboard = () => {
     window.location.href = "/";
   };
 
+  const handleFilterRole = (e) => {
+    const role = e.target.value;
+    setFilterRole(role);
+    if (role) {
+      setFilteredUsers(users.filter((user) => user.role === role));
+    } else {
+      setFilteredUsers(users); // Reset filter if no role selected
+    }
+  };
+
   return (
-    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
+    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-64 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
       <div className="flex justify-between">
-        <h2 className="text-3xl font-semibold mb-6">Dashboard</h2>
+        <h2 className="text-4xl font-semibold mb-6">Dashboard</h2>
         <button
           onClick={() => handleLogout()}
           className="bg-gradient-to-r from-red-600 to-red-500 text-px-4 py-2 px-4 rounded-md mb-4 hover:scale-105"
@@ -224,6 +234,7 @@ const Dashboard = () => {
           Logout
         </button>
       </div>
+
       {role === "categoryManager" && (
         <div className="mb-6 p-4 bg-gray-700 rounded-lg shadow-md">
           <h3 className="text-2xl font-medium mb-4">Change Quote Category</h3>
@@ -245,37 +256,58 @@ const Dashboard = () => {
 
       {role === "admin" && (
         <div className="mb-6 bg-white/10 backdrop-blur-lg rounded-md p-10">
-          <div className="flex justify-between">
-
-          <h3 className="text-2xl font-medium mb-4">Manage Users</h3>
-          <button
-            onClick={() => openModal()}
-            className="bg-transparent border border-green-600/50 text-green-600 text-px-4 py-2 px-4 rounded-md mb-4 hover:scale-105"
-          >
-            Add User
-          </button>
-</div>
-          {users.length === 0 ? (
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-semibold">Manage Users</h3>
+            <div className="flex space-x-4">
+              <select
+                value={filterRole}
+                onChange={handleFilterRole}
+                className="bg-gray-800 text-white px-3 py-2 rounded-md"
+              >
+                <option value="">Filter by Role</option>
+                <option value="user">User</option>
+                <option value="categoryManager">Category Manager</option>
+              </select>
+              <button
+                onClick={() => openModal()}
+                className="bg-transparent border border-green-600/50 text-green-600 text-px-4 py-2 px-4 rounded-md hover:scale-105"
+              >
+                Add User
+              </button>
+            </div>
+          </div>
+          {filteredUsers.length === 0 ? (
             <p>No users to display</p>
           ) : (
-            users.map((user) => (
+            filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex items-center justify-between py-6 border-b"
+                className="flex items-center justify-between py-6 border-b border-white/20"
               >
                 <span>{user.username}</span>
-                <div className="px-2">
+                <div className="px-2 items-center flex justify-center">
+                  <div className="flex justify-start w-64 text-md mr-6 bg-transparent text-white backdrop-blur-lg text-sm rounded-2xl p-3 border border-white/10 shadow-inner">
+                    {user.role === "categoryManager" ? (
+                      <UserRoundPen className="w-4 h-4 mr-2" />
+                    ) : (
+                      <User className="w-4 h-4 mr-2" />
+                    )}
+                    <span className="text-left mr-4">
+                      {user.role === "categoryManager" ? "Manager" : "User"}
+                    </span>
+                  </div>
+
                   <button
                     onClick={() => openModal(user)}
-                    className="bg-transparent border border-yellow-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-2 rounded-md mr-4"
+                    className="bg-transparent border border-yellow-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl mr-4"
                   >
-                   <Pencil className="text-yellow-400" /> 
+                    <Pencil className="text-yellow-400" />
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user._id)}
-                    className="bg-transparent border border-red-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-2 rounded-md mr-4"
+                    className="bg-transparent border border-red-500/30 shadow-lg hover:bg-yellow-100/10 text-white px-4 py-3 rounded-2xl mr-4"
                   >
-                   <Trash2 className="text-red-500" /> 
+                    <Trash2 className="text-red-500" />
                   </button>
                 </div>
               </div>
@@ -286,7 +318,7 @@ const Dashboard = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white/10 backdrop-blur-xl p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white/10 backdrop-blur-xl p-10 rounded-lg shadow-lg w-96">
             <h3 className="text-2xl font-medium mb-4">
               {isEditing ? "Edit User" : "Add User"}
             </h3>
@@ -332,15 +364,21 @@ const Dashboard = () => {
             <div className="flex justify-between">
               <button
                 onClick={handleSaveUser}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                className="bg-blue-500 text-white px-2 rounded-md"
               >
-                Save
+                <div className="flex w-24">
+                  <Save className="mr-2" />
+                  <span>Save</span>
+                </div>
               </button>
               <button
                 onClick={closeModal}
                 className="bg-gray-500 text-white px-4 py-2 rounded-md"
               >
-                Cancel
+                <div className="flex w-24">
+                  <X className="mr-2" />
+                  <span>Cancel</span>
+                </div>
               </button>
             </div>
           </div>

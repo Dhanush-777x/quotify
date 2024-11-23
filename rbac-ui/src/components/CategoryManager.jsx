@@ -1,10 +1,15 @@
+import { Edit } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 const CategoryManager = ({ currentUserId }) => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // For displaying filtered data
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // Store the user being edited
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // Search input
+  const [sortOrder, setSortOrder] = useState("asc"); // Sorting order
+  const [filterCategory, setFilterCategory] = useState(""); // Selected category for filtering
 
   // Hard-coded categories array
   const categories = [
@@ -35,7 +40,13 @@ const CategoryManager = ({ currentUserId }) => {
           throw new Error("Failed to fetch users");
         }
         const data = await response.json();
-        setUsers(data);
+
+        // Filter out users with role 'categoryManager'
+        const filteredUsers = data.filter(
+          (user) => user.role !== "categoryManager"
+        );
+        setUsers(filteredUsers);
+        setFilteredUsers(filteredUsers); // Initialize filteredUsers
       } catch (error) {
         console.error("Error fetching users:", error);
         alert("Failed to fetch users.");
@@ -44,6 +55,32 @@ const CategoryManager = ({ currentUserId }) => {
 
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    // Filter and search logic combined
+    let updatedUsers = users;
+
+    if (filterCategory) {
+      updatedUsers = updatedUsers.filter(
+        (user) => user.category === filterCategory
+      );
+    }
+
+    if (searchTerm) {
+      updatedUsers = updatedUsers.filter((user) =>
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sorting logic
+    if (sortOrder === "asc") {
+      updatedUsers.sort((a, b) => a.username.localeCompare(b.username));
+    } else {
+      updatedUsers.sort((a, b) => b.username.localeCompare(a.username));
+    }
+
+    setFilteredUsers(updatedUsers);
+  }, [searchTerm, filterCategory, sortOrder, users]);
 
   const openModal = (user) => {
     setSelectedUser(user);
@@ -110,9 +147,9 @@ const CategoryManager = ({ currentUserId }) => {
   };
 
   return (
-    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
+    <div className="absolute text-white inset-0 -z-10 w-full items-center justify-center h-max px-64 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_30%,#63e_100%)]">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Category Manager</h2>
+        <h2 className="text-2xl font-semibold">Manager</h2>
         <button
           onClick={handleLogout}
           className="bg-red-500 text-white px-4 py-2 rounded-md"
@@ -121,12 +158,43 @@ const CategoryManager = ({ currentUserId }) => {
         </button>
       </div>
 
+      {/* Search, Sort, and Filter Controls */}
+      <div className="flex items-center justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search by username"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md w-1/3"
+        />
+        <select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md w-1/4"
+        >
+          <option value="">Filter by Category</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category} className="bg-black">
+              {category}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={() =>
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+          }
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Sort: {sortOrder === "asc" ? "Ascending" : "Descending"}
+        </button>
+      </div>
+
       {/* User List */}
       <div className="bg-white/10 rounded-lg backdrop-blur-lg p-10">
         <h3 className="text-xl font-medium mb-4">Users</h3>
         <div>
-          {users.length > 0 ? (
-            users.map((user) => (
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
               <div
                 key={user._id}
                 className="flex items-center justify-between py-6 border-b border-gray-600"
@@ -134,9 +202,12 @@ const CategoryManager = ({ currentUserId }) => {
                 <span>{user.username}</span>
                 <button
                   onClick={() => openModal(user)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+                  className="bg-transparent border border-yellow-300/30 px-4 py-2 rounded-md"
                 >
-                  Edit Category
+                  <div className="flex mr-2 justify-center items-center text-yellow-300">
+                    <Edit className="text-yellow-300 mr-2" />
+                    Edit
+                  </div>
                 </button>
               </div>
             ))
